@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 
@@ -25,10 +25,6 @@ export default function Login({ navigation }) {
   }
 
   const handleLogin = async () => {
-    if (!username || !password) {
-      alert('Please fill in both email and password');
-      return;
-    }
     try {
       const response = await fetch('http://192.168.12.131:3000/login', {
         method: 'POST',
@@ -44,17 +40,11 @@ export default function Login({ navigation }) {
         const data = await response.json();
         console.log('Login successful');
         switch (data.userType) {
-          case 'learner':
-            navigation.navigate('Learner');
-            break;
-          case 'teacher':
-            navigation.navigate('Teacher');
-            break;
-          case 'institution':
-            navigation.navigate('Institution');
-            break;
-          case 'others':
-            navigation.navigate('Others');
+          case 'Student/Learner':
+          case 'Teacher/Tutor':
+          case 'Institution':
+          case 'Others':
+            navigation.navigate('Dashboard', { username: data.username });
             break;
           default:
             navigation.navigate('Dashboard');
@@ -62,7 +52,7 @@ export default function Login({ navigation }) {
         }
       } else {
         const data = await response.json();
-        throw new Error(data.error);
+        Alert.alert('Login failed', data.error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
       }
     } catch (error) {
       console.error('Login failed:', error.message);

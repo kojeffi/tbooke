@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, TextInput, Image, ScrollView, Dimensions } from 'react-native';
-import { Ionicons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { 
+  View, 
+  Image, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Animated, 
+  TextInput, 
+  ScrollView, 
+  Dimensions 
+} from 'react-native';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import ProfileSection from './ProfileSection'; // Import the ProfileSection component
+import ProfileSection from './ProfileSection';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -10,13 +20,12 @@ export default function DashboardWrapper({ navigation, route }) {
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(-200));
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [showProfile, setShowProfile] = useState(false); // State to control the visibility of the ProfileSection
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        'Nunito': require('./../assets/fonts/Nunito-Italic-VariableFont_wght.ttf'),
-        'Outfit': require('./../assets/fonts/Outfit-VariableFont_wght.ttf'),
+        'Nunito': require('./../assets/fonts/Nunito-VariableFont_wght.ttf'),
       });
       setFontsLoaded(true);
     }
@@ -43,50 +52,48 @@ export default function DashboardWrapper({ navigation, route }) {
     }
   };
 
+  const openProfile = () => {
+    toggleCollapse();
+    setShowProfile(true);
+  };
+
   const closeProfile = () => {
     setShowProfile(false);
   };
 
   return (
     <View style={styles.container}>
-      {/* Navbar */}
       <View style={styles.navbar}>
         <TouchableOpacity style={styles.logoContainer}>
-          <Text style={styles.logo}>
-            <FontAwesome name="book" size={24} color="#fff" />
-            TBOOKE
-          </Text>
+          <Image style={styles.logo} source={require('./../assets/Images/logo2.jpg')} />
         </TouchableOpacity>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
-            placeholderTextColor="#000"
+            placeholderTextColor="#606770"
           />
-          <Ionicons name="search" size={24} color="#000" style={styles.searchIcon} />
+          <Ionicons name="search" size={24} color="#606770" style={styles.searchIcon} />
         </View>
-        <View style={styles.notificationIcons}>
-          <TouchableOpacity style={styles.notificationIcon}>
-            <Ionicons name="md-mail" size={24} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationIcon}>
-            <Ionicons name="ios-notifications" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.notificationIcon}>
+          <Ionicons name="mail" size={24} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.notificationIcon}>
+          <Ionicons name="notifications" size={24} color="#fff" />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.toggleButton} onPress={toggleCollapse}>
           <Ionicons name={collapsed ? 'menu' : 'close'} size={30} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { left: animation }]}>
         <ScrollView>
           <View style={styles.sidebarContent}>
-            <TouchableOpacity style={styles.sidebarItem}>
+            <TouchableOpacity style={styles.sidebarItem} onPress={() => navigation.navigate('Home')}>
               <FontAwesome name="home" size={24} color="#fff" />
               <Text style={styles.sidebarText}>Home</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowProfile(true)} style={styles.sidebarItem}>
+            <TouchableOpacity onPress={openProfile} style={styles.sidebarItem}>
               <FontAwesome name="user" size={24} color="#fff" />
               <Text style={styles.sidebarText}>Profile</Text>
             </TouchableOpacity>
@@ -112,7 +119,7 @@ export default function DashboardWrapper({ navigation, route }) {
                   <FontAwesome name="cog" size={24} color="#fff" />
                   <Text style={styles.sidebarText}>Setting</Text>
                 </TouchableOpacity>
-                <TouchableOpacity  onPress={() => navigation.navigate('Home')} style={styles.sidebarItem}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.sidebarItem}>
                   <FontAwesome name="sign-out" size={24} color="#fff" />
                   <Text style={styles.sidebarText}>LogOut</Text>
                 </TouchableOpacity>
@@ -122,12 +129,10 @@ export default function DashboardWrapper({ navigation, route }) {
         </ScrollView>
       </Animated.View>
 
-      {/* Touchable component to hide sidebar */}
       {!collapsed && (
         <TouchableOpacity style={[styles.overlay, { width: windowWidth - 200 }]} onPress={hideSidebar} />
       )}
 
-      {/* Render ProfileSection if showProfile state is true */}
       {showProfile && (
         <View style={styles.profileSectionWrapper}>
           <TouchableOpacity style={styles.closeButton} onPress={closeProfile}>
@@ -137,17 +142,18 @@ export default function DashboardWrapper({ navigation, route }) {
         </View>
       )}
 
-      <Dashboard navigation={navigation} route={route} />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <DashboardContent route={route} />
+      </ScrollView>
     </View>
   );
 }
 
-const Dashboard = ({ route }) => {
-  // const { email} = route.params;
-
+const DashboardContent = ({ route }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.cardTitle}>Welcome, {}!</Text>
+      <Text style={styles.welcomeText}>Welcome!</Text>
+      <Text style={styles.subText}>Discover new learning opportunities:</Text>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.mainContent}>
@@ -183,7 +189,8 @@ const Dashboard = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightcyan',
+    marginTop: 30,
+    backgroundColor: 'lightcyan', //#E5E5E5 Light gray background
   },
   navbar: {
     flexDirection: 'row',
@@ -194,20 +201,19 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#dddfe2',
-    backgroundColor: 'darkcyan',
+    backgroundColor: '#3b5998', // Dark blue navbar
     elevation: 3,
   },
   logoContainer: {},
   logo: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: '#fff',
-    fontFamily: 'Outfit',
+    height: 60,
+    width: 60,
+    resizeMode: 'contain', // Ensure logo fits well
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e4e6eb',
+    backgroundColor: '#e4e6eb', // Light gray search bar
     borderRadius: 20,
     paddingHorizontal: 10,
     flex: 1,
@@ -215,16 +221,13 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 10,
+    color: '#606770', // Dark gray search icon
   },
   searchInput: {
     flex: 1,
-    color: '#333',
+    color: '#000',
     fontSize: 16,
     fontFamily: 'Nunito',
-  },
-  notificationIcons: {
-    flexDirection: 'row',
-    marginRight: 10,
   },
   notificationIcon: {
     marginLeft: 10,
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
     top: 52,
     bottom: 0,
     borderRadius: 20,
-    backgroundColor: 'darkcyan',
+    backgroundColor: '#3b5998', // Dark blue sidebar
     width: 200,
     zIndex: 99,
     shadowColor: '#000',
@@ -277,6 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     marginBottom: 20,
+    backgroundColor: '#fff', // White cards
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -290,11 +294,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     fontFamily: 'Nunito',
-    color: '#000',
+    color: '#333', // Dark gray title
   },
   cardText: {
     fontSize: 16,
-    color: '#000',
+    color: '#606770', // Dark gray text
     fontFamily: 'Nunito',
   },
   overlay: {
@@ -307,16 +311,32 @@ const styles = StyleSheet.create({
   },
   profileSectionWrapper: {
     position: 'absolute',
-    top: 0,
+    top: 96,
     left: 0,
     right: 0,
     bottom: 0,
     zIndex: 100,
+    padding: 20,
   },
   closeButton: {
     position: 'absolute',
     top: 20,
     right: 20,
     zIndex: 101,
+    color: 'red',
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontFamily: 'Nunito',
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#333', // Dark gray welcome text
+  },
+  subText: {
+    fontSize: 18,
+    fontFamily: 'Nunito',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#606770', // Dark gray subtext
   },
 });

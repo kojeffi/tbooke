@@ -29,7 +29,7 @@ export default function Home({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.topContainer}>
-        <Image style={styles.image} source={require('./../assets/Images/logo1.jpg')} />
+        <Image style={styles.image} source={require('./../assets/Images/logo2.jpg')} />
       </View>
       <View style={styles.content}>
         <Text style={[styles.subtitle, styles.textCenter, { fontFamily: 'Outfit' }]}>Welcome to Tbooke</Text>
@@ -53,11 +53,11 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'lightcyan',
     padding: 0,
   },
   topContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'lightcyan',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonGreen: {
-    backgroundColor: 'green',
+    backgroundColor: '#17a2b8', //green
   },
   buttonGray: {
     backgroundColor: 'gray',

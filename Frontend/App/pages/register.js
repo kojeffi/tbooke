@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -66,8 +66,22 @@ export default function Register({ navigation }) {
       });
   
       if (response.ok) {
-        console.log('Registration successful');
-        navigation.navigate('Login', { email });
+        // Display styled alert upon successful registration
+        Alert.alert(
+          'Registration Successful',
+          'You have successfully registered.',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Login', { email }),
+              style: 'default', // Style the button as default (can be 'cancel' or 'destructive' as well)
+            },
+          ],
+          {
+            cancelable: false, // Prevent dismissing the alert by tapping outside of it
+            style: 'success', // Custom style for the alert (defined below)
+          }
+        );
       } else {
         const data = await response.json();
         throw new Error(data.error);
@@ -107,20 +121,6 @@ export default function Register({ navigation }) {
           />
         </View>
         <View style={styles.inputContainer}>
-          <Ionicons name="person-circle" size={24} color="#555" style={styles.icon} />
-          <DropDownPicker
-            placeholder="Select User Type"
-            style={[styles.dropdown, { fontFamily: 'Nunito' }]}
-            containerStyle={{ flex: 1 }}
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-          />
-        </View>
-        <View style={styles.inputContainer}>
           <Ionicons name="lock-closed" size={24} color="#555" style={styles.icon} />
           <TextInput
             style={[styles.input, { fontFamily: 'Nunito' }]}
@@ -148,6 +148,25 @@ export default function Register({ navigation }) {
             onChangeText={setConfirmPassword}
           />
         </View>
+        <View style={styles.inputContainer}>
+          <Text>Select userType</Text>
+          <DropDownPicker
+            placeholder="Select User Type"
+            style={[styles.dropdown, { fontFamily: 'Nunito', marginTop: 10 }]} // Adjust marginTop for spacing
+            containerStyle={{ flex: 1 }}
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+          />
+        </View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
+        <View style={styles.inputContainer}></View>
         <TouchableOpacity onPress={handleRegister} style={styles.button}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
@@ -167,7 +186,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightcyan',
+    backgroundColor: 'lightcyan', // #F0F2F5Changed background color for better readability
     paddingHorizontal: 20,
   },
   card: {
@@ -191,7 +210,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     color: '#333333',
-    fontFamily: 'Nunito',
+    fontFamily: 'Outfit',
   },
   subtitle: {
     marginBottom: 20,
@@ -200,23 +219,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito',
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D9D9D9',
-    paddingBottom: 5, // Add padding to create space between the input and the line
   },
   icon: {
-    marginRight: 10,
+    position: 'absolute',
+    left: 0,
+    top: 9,
   },
   input: {
-    flex: 1,
+    paddingLeft: 40, // Adjust paddingLeft to accommodate icon
     height: 40,
-    paddingLeft: 10,
-    color: '#333333',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D9D9D9',
     fontFamily: 'Nunito',
-    borderBottomWidth: 0, // Remove the border
   },
   dropdown: {
     backgroundColor: '#FFFFFF',
@@ -224,9 +239,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     fontFamily: 'Nunito',
+    zIndex: 999, // Ensure dropdown is rendered above other elements
   },
   loginText: {
-    marginTop: 5,
+    marginTop: 20, // Adjust marginTop for spacing
     marginBottom: 20,
     fontSize: 16,
     textAlign: 'center',
@@ -243,7 +259,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#7289DA',
     paddingVertical: 12,
     borderRadius: 8,
-    marginTop: 10,
   },
   buttonText: {
     color: '#FFFFFF',
@@ -254,6 +269,6 @@ const styles = StyleSheet.create({
   eyeIcon: {
     position: 'absolute',
     right: 10,
-    marginTop: -12,
+    top: 9,
   },
 });

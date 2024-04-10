@@ -110,6 +110,76 @@ function redirectToDashboard(res, userType) {
   res.status(200).json({ message: 'Redirecting to dashboard', redirectUrl });
 }
 
+// Endpoint to save a new profile
+app.post('/profiles', (req, res) => {
+  const {
+    profileName,
+    profileRole,
+    location,
+    workplace,
+    hometown,
+    website,
+    twitter,
+    facebook,
+    linkedin,
+    instagram,
+    profileImage,
+    profileUserType // Make sure this property is correctly provided in the request body
+  } = req.body;
+
+  const profileData = {
+    profileName,
+    profileRole,
+    location,
+    workplace,
+    hometown,
+    website,
+    twitter,
+    facebook,
+    linkedin,
+    instagram,
+    profileImage,
+    profileUserType // Make sure to include it in the profile data to be saved
+  };
+
+  const sql = 'INSERT INTO profiles SET ?';
+  db.query(sql, profileData, (error, results, fields) => {
+    if (error) {
+      console.error('Error saving profile:', error);
+      res.status(500).json({ error: 'Error saving profile' });
+      return;
+    }
+    console.log('Profile saved successfully');
+    res.json({ message: 'Profile saved successfully', profileId: results.insertId });
+  });
+});
+
+// Endpoint to fetch user profile data including user and profile details
+app.get('/user-profile/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const sql = `
+    SELECT u.id, u.name, u.email, u.userType, p.profileName, p.profileRole, p.location, p.workplace, p.hometown, p.website, p.twitter, p.facebook, p.linkedin, p.instagram, p.profileImage
+    FROM users u
+    LEFT JOIN profiles p ON u.id = p.id
+    WHERE u.id = ?
+  `;
+  db.query(sql, [userId], (error, results, fields) => {
+    if (error) {
+      console.error('Error fetching user profile:', error);
+      res.status(500).json({ error: 'Error fetching user profile' });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ error: 'User profile not found' });
+      return;
+    }
+    const userProfile = results[0];
+    res.json(userProfile);
+  });
+});
+
+// Other endpoints for updating, deleting, and retrieving profiles can be added similarly
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -5,10 +5,12 @@ import Home from './App/pages/home'; // Use lowercase 'home'
 import Register from './App/pages/register';
 import Login from './App/pages/login';
 import Dashboard from './App/pages/dashboard';
-import learner from './App/pages/learner';
+import Learner from './App/pages/learner';
 import Teacher from './App/pages/teacher';
 import Institution from './App/pages/institution';
 import Others from './App/pages/others';
+import EditProfile from './App/pages/EditProfile'
+import ProfileSection from './App/pages/ProfileSection'
 import * as Font from 'expo-font';
 
 const Stack = createStackNavigator();
@@ -26,16 +28,18 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
-        screenOptions={{ headerShown: true }} // Hide the header for all screens
+        screenOptions={{ headerShown: false }} // Hide the header for all screens
         >
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="Learner" component={Dashboard} />
+        <Stack.Screen name="Learner" component={Learner} />
         <Stack.Screen name="Teacher" component={Dashboard} />
         <Stack.Screen name="Institution" component={Dashboard} />
         <Stack.Screen name="Others" component={Dashboard} />
+        <Stack.Screen name="ProfileSection" component={ProfileSection} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
